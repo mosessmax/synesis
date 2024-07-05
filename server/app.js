@@ -29,7 +29,8 @@ app.get('/', (req, res) => {
 // Use auth routes
 app.use('/api/auth', authRoutes);
 app.use('/api/protected', protectedRoutes);
-app.use('api/tests', testRoutes);
+app.use('/api/tests', testRoutes);
+app.use
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
