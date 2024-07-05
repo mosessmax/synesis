@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/user.js'
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
   // Get token from header
   const token = req.header('x-auth-token');
 
@@ -13,6 +14,12 @@ const auth = (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // find user by id 
+    const user = await User.findById(decoded.user.id).select('-password');
+
+    if (!user) {
+      return res.status(401).json({ msg: "Token is not valid "})
+    }
     // Add user from payload
     req.user = decoded.user;
     next();
