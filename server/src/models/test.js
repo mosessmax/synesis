@@ -14,6 +14,7 @@ const testSchema = new mongoose.Schema({
     passingScore: { type: Number, required: true, min: 0, max: 100},
     questions: [questionSchema],
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    isActive: { type: Boolean, default:true},
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

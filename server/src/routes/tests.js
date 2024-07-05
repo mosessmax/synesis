@@ -2,6 +2,8 @@ import express from 'express';
 import Test from '../models/test.js';
 import auth from '../middleware/auth.js';
 import isAdmin from '../middleware/isAdmin.js';
+import TestSubmission from '../models/testSubmission.js';
+
 
 const router = express.Router();
 
@@ -135,12 +137,46 @@ router.post('/:id/submit', auth, async (req, res) => {
         if (!test) {
             return res.status(404).json({ message: 'Test not found' });
         }
-        // Here you would process the submitted answers, calculate the score, and save the results
-        res.json({ message: 'Test submitted successfully' });
+
+        const { answers } = req.body;
+        
+        // Calculate score
+        let score = 0;
+        const submissionAnswers = [];
+        
+        for (const answer of answers) {
+            const question = test.questions.id(answer.questionId);
+            if (question && question.correctAnswer === answer.answer) {
+                score++;
+            }
+            submissionAnswers.push({
+                questionId: answer.questionId,
+                answer: answer.answer
+            });
+        }
+
+        const percentage = (score / test.questions.length) * 100;
+        const passed = percentage >= test.passingScore;
+
+        // Create submission
+        const submission = new TestSubmission({
+            test: test._id,
+            user: req.user._id,
+            answers: submissionAnswers,
+            score: percentage,
+            passed
+        });
+
+        await submission.save();
+
+        res.json({
+            message: 'Test submitted successfully',
+            score: percentage,
+            passed
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
 });
-
 export default router;
