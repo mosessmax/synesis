@@ -5,7 +5,7 @@ import auth from '../middleware/auth.js';
 const router = express.Router();
 
 // new test route
-router.post('/', auth, async (req) => {
+router.post('/', auth, async (req, res) => {
     try {
         const { title, description, duration, questions } = req.body;
         const newTest = new Test({

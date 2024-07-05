@@ -7,13 +7,20 @@ const questionSchema = new mongoose.Schema({
     correctAnswer: { type: String, required: true },
 });
 
-const testSchemea = new mongoose.Schema({
+const testSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String,},
     duration: { type: Number, required: true }, //minutes 
+    passingScore: { type: Number, required: true, min: 0, max: 100},
     questions: [questionSchema],
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model('Test', testSchemea);
+testSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
+});
+
+export default mongoose.model('Test', testSchema);
