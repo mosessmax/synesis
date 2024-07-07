@@ -111,7 +111,27 @@ router.post('/:id/start', auth, async (req, res) => {
         if (!test.isActive) {
             return res.status(400).json({ message: 'This test is not currently active' });
         }
-        // Here you might want to create a TestSession or similar to track the user's progress
+// check is there's an existing session 
+let testSession = await TestSession.findOne({ 
+    test: test._id,
+    user: req.user._id,
+    isCompleted: false });
+
+    if (!testSession) {
+        testSession = new TestSession({
+            test: test._id,
+            user: req.user._id
+        });
+
+        await testSession.save();
+
+        session = new TestSession({
+            test: test._id,
+            user: req.user._id
+        });
+        await session.save();
+    }
+
         res.json({
             testId: test._id,
             title: test.title,
