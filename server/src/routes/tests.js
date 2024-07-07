@@ -1,8 +1,12 @@
 import express from 'express';
+import { body, param } from 'express-validator';
 import Test from '../models/test.js';
 import auth from '../middleware/auth.js';
 import isAdmin from '../middleware/isAdmin.js';
 import TestSubmission from '../models/testSubmission.js';
+import TestSession from '../models/testSession.js';
+import { handleValidationErrors, handleAsyncErrors } from '../utils/errorHandling.js';
+
 
 
 const router = express.Router();
@@ -199,4 +203,132 @@ router.post('/:id/submit', auth, async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+// save progress
+router.post('/:id/save-progress',
+    [
+      param('id').isMongoId().withMessage('Invalid test ID'),
+      body('sessionId').isMongoId().withMessage('Invalid session ID'),
+      body('currentQuestion').isInt({ min: 0 }).withMessage('Invalid question number'),
+      body('answer.questionId').isMongoId().withMessage('Invalid question ID'),
+      body('answer.answer').notEmpty().withMessage('Answer cannot be empty'),
+      auth
+    ],
+    handleValidationErrors,
+    handleAsyncErrors(async (req, res) => {
+      const { sessionId, currentQuestion, answer } = req.body;
+      
+      const session = await TestSession.findById(sessionId);
+      if (!session) {
+        return res.status(404).json({ message: 'Session not found' });
+      }
+    })
+  );
+
+
+  // Get test results for a user
+router.get('/results', 
+    auth, 
+    handleAsyncErrors(async (req, res) => {
+      const submissions = await TestSubmission.find({ user: req.user._id })
+        .populate('test', 'title')
+        .sort('-submittedAt');
+  
+      res.json(submissions);
+    })
+  );
+  
+  // Get detailed result for a specific submission
+  router.get('/results/:submissionId',
+    [
+      param('submissionId').isMongoId().withMessage('Invalid submission ID'),
+      auth
+    ],
+    handleValidationErrors,
+    handleAsyncErrors(async (req, res) => {
+      const submission = await TestSubmission.findById(req.params.submissionId)
+        .populate('test');
+  
+      if (!submission) {
+        return res.status(404).json({ message: 'Submission not found' });
+      }
+  
+      if (submission.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+  
+      res.json(submission);
+    })
+  );
+  
+  // Get analytics for a specific test (admin only)
+  router.get('/:id/analytics',
+    [
+      param('id').isMongoId().withMessage('Invalid test ID'),
+      auth,
+      isAdmin
+    ],
+    handleValidationErrors,
+    handleAsyncErrors(async (req, res) => {
+      const test = await Test.findById(req.params.id);
+      if (!test) {
+        return res.status(404).json({ message: 'Test not found' });
+      }
+  
+      const submissions = await TestSubmission.find({ test: test._id });
+  
+      const totalAttempts = submissions.length;
+      const passedAttempts = submissions.filter(s => s.passed).length;
+      const averageScore = submissions.reduce((acc, s) => acc + s.score, 0) / totalAttempts;
+  
+      res.json({
+        testId: test._id,
+        title: test.title,
+        totalAttempts,
+        passedAttempts,
+        passRate: (passedAttempts / totalAttempts) * 100,
+        averageScore
+      });
+    })
+  );
+  
+  // Get overall analytics (admin only)
+  router.get('/overall-analytics',
+    [auth, isAdmin],
+    handleAsyncErrors(async (req, res) => {
+      const totalTests = await Test.countDocuments();
+      const totalSubmissions = await TestSubmission.countDocuments();
+      const passedSubmissions = await TestSubmission.countDocuments({ passed: true });
+  
+      const topTests = await TestSubmission.aggregate([
+        { $group: { 
+          _id: '$test', 
+          attempts: { $sum: 1 },
+          avgScore: { $avg: '$score' }
+        }},
+        { $sort: { attempts: -1 } },
+        { $limit: 5 },
+        { $lookup: {
+          from: 'tests',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'testDetails'
+        }},
+        { $unwind: '$testDetails' },
+        { $project: {
+          testId: '$_id',
+          title: '$testDetails.title',
+          attempts: 1,
+          avgScore: 1
+        }}
+      ]);
+  
+      res.json({
+        totalTests,
+        totalSubmissions,
+        passRate: (passedSubmissions / totalSubmissions) * 100,
+        topTests
+      });
+    })
+  );
 export default router;
