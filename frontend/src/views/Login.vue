@@ -47,19 +47,21 @@
   const password = ref('')
   const isLoading = ref(false)
   
+
   const handleSubmit = async () => {
-    isLoading.value = true
-    try {
-    //    login API here
+  isLoading.value = true;
+  error.value = '';
+  try {
     // const response = await login(email.value, password.value)
     // save the token to localStorage
     // localStorage.setItem('token', response.token)
-      router.push('/dashboard')
-    } catch (error) {
-      console.error('Login failed:', error)
-      // error handling () error message to user)
-    } finally {
-      isLoading.value = false
-    }
+    await userStore.login(email.value, password.value);
+    router.push('/dashboard');
+  } catch (err) {
+    error.value = err.response?.data?.message || 'An error occurred during login';
+  } finally {
+    isLoading.value = false;
   }
+};
+    
   </script>
