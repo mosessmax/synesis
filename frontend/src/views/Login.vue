@@ -22,7 +22,7 @@
             </Button>
           </form>
         </CardContent>
-        <CardFooter class="flex justify-between">
+        <CardFooter class="flex justify-center">
           <Button variant="link" @click="$router.push('/register')">
             Don't have an account?
           </Button>

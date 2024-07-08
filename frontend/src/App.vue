@@ -6,9 +6,9 @@ import { Button } from './components/ui/button';
 <template>
   
   <RouterView />
-  <div class="container py-8">
+  <!-- <div class="container py-8">
     <Button>click me</Button>
-  </div>
+  </div> -->
 
 </template>
 

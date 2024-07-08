@@ -13,6 +13,13 @@
           >
             Dashboard
           </RouterLink>
+          <RouterLink
+          to="/results"
+          class="block px-4 py-2 hover:bg-gray-700"
+          active-class="bg-gray-700"
+        >
+          Results
+        </RouterLink>
           <button
             @click="logout"
             class="block w-full text-left px-4 py-2 hover:bg-gray-700"
@@ -39,7 +46,7 @@
   </template>
   
   <script setup>
-  import { useRouter } from 'vue-router'
+  import { RouterLink, useRouter } from 'vue-router'
   
   const router = useRouter()
   
