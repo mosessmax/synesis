@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import authRoutes from './src/routes/auth.js';
 import protectedRoutes from './src/routes/protected.js';
 import testRoutes from './src/routes/tests.js';
-import { errorHandler } from './utils/errorHandling.js';
+import { errorHandler } from '.src/models/utils/errorHandling.js';
 
 
 dotenv.config();
