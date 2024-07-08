@@ -9,7 +9,7 @@
     "baseColor": "slate",
     "cssVariables": true
   },
-  "framework": "nuxt",
+  "framework": "vue",
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils"
