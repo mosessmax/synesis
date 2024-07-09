@@ -7,7 +7,7 @@
       </CardHeader>
       <CardContent>
         <div v-if="availableTests.length" class="space-y-4">
-          <div v-for="test in availableTests" :key="test.id" class="flex justify-between items-center">
+          <div v-for="test in availableTests" :key="test.id" class="flex items-center justify-between">
             <div>
               <h3 class="text-lg font-medium">{{ test.title }}</h3>
               <p class="text-sm text-gray-500">Duration: {{ test.duration }} minutes</p>
@@ -28,7 +28,7 @@
       </CardHeader>
       <CardContent>
         <div v-if="pastResults.length" class="space-y-4">
-          <div v-for="result in pastResults" :key="result.id" class="flex justify-between items-center">
+          <div v-for="result in pastResults" :key="result.id" class="flex items-center justify-between">
             <div>
               <h3 class="text-lg font-medium">{{ result.testTitle }}</h3>
               <p class="text-sm text-gray-500">Score: {{ result.score }}%</p>

@@ -1,19 +1,26 @@
-// src/server.js
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-// import authRoutes from './routes/auth.js';
-// import protectedRoutes from './routes/protected.js';
-
+import cors from 'cors';
 import authRoutes from './src/routes/auth.js';
 import protectedRoutes from './src/routes/protected.js';
 import testRoutes from './src/routes/tests.js';
-import { errorHandler } from '.src/models/utils/errorHandling.js';
+import { errorHandler } from './src/utils/errorHandling.js';
+// import { errorHandler } from './src/models/utils/errorHandling.js';
 
 
 dotenv.config();
 
 const app = express();
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 

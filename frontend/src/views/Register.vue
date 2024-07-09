@@ -7,7 +7,7 @@
         </CardHeader>
         <CardContent>
           <form @submit.prevent="handleSubmit">
-            <div class="grid w-full items-center gap-4">
+            <div class="grid items-center w-full gap-4">
               <div class="flex flex-col space-y-1.5">
                 <Label for="name">Name</Label>
                 <Input id="name" v-model="name" placeholder="Enter your name" />
@@ -46,30 +46,77 @@
   import { Label } from '@/components/ui/label'
   import { Input } from '@/components/ui/input'
   import { Button } from '@/components/ui/button'
-  // API service here
-  // import { register } from '@/services/api'
+  import { useToast } from '@/components/ui/toast'
+  // import { apiService } from '@/services/api'
+  import apiService from '/src/services/api.js';
   
   const router = useRouter()
+  const { toast } = useToast() 
   const name = ref('')
   const email = ref('')
   const password = ref('')
   const confirmPassword = ref('')
   const isLoading = ref(false)
+
+  const validateForm = () => {
+    if (name.value === '' || email.value === '' || password.value === '' || confirmPassword.value === '') {
+      toast({
+        title: 'error',
+        description: 'Please fill in all fields',
+        status: 'error',
+        variant: 'destructive',
+        duration: 3000,
+        isClosable: true
+      })
+      return true
+  }
+  if (password.value !== confirmPassword.value) {
+    toast({
+      title: 'error',
+      description: 'Passwords don\'t match',
+      status: 'error',
+      variant: 'destructive',
+      duration: 3000,
+      isClosable: true
+    })
+    return false
+  }
+  return true
+}
+// if i need more validation, i'll add more here  
+
   
   const handleSubmit = async () => {
-    if (password.value !== confirmPassword.value) {
-      alert("Passwords don't match")
-      return
-    }
+    if (!validateForm()) return;
+
+    // if (password.value !== confirmPassword.value) {
+    //   alert("Passwords don't match")
+    //   return
+    // }
     
-    isLoading.value = true
+    isLoading.value = true;
     try {
-      // register API here
+      await apiService.register(name.value, email.value, password.value)
+      toast({
+        title: 'success',
+        description: 'registration successful. please login.',
+        status: 'success',
+        variant: 'destructive',
+        duration: 3000,
+        isClosable: true
+      })
       // await register(name.value, email.value, password.value)
       router.push('/login')
     } catch (error) {
       console.error('Registration failed:', error)
-      // error handling () error message to user)
+      toast({
+        title: 'error',
+        description: 'registration failed. please check try again.',
+        status: 'error',
+        variant: 'destructive',
+        duration: 3000,
+        isClosable: true
+      })
     } finally {
       isLoading.value = false
     }
