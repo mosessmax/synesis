@@ -96,7 +96,7 @@
     
     isLoading.value = true;
     try {
-      await apiService.register(name.value, email.value, password.value)
+      await apiService.auth.register(name.value, matricNumber.value, email.value, password.value)
       toast({
         title: 'success',
         description: 'registration successful. please login.',

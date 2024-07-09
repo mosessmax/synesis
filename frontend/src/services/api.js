@@ -44,7 +44,7 @@ const handleApiError = async (request) => {
 const apiService = {
   auth: {
     login: (email, password) => handleApiError(() => api.post('/auth/login', { email, password })),
-    register: (name, email, password) => handleApiError(() => api.post('/auth/register', { name, email, password })),
+    register: (name, matricNumber, email, password) => handleApiError(() => api.post('/auth/register', { name, matricNumber, email, password })),
   },
   tests: {
     getAvailableTests: () => handleApiError(() => api.get('/tests/available')),

@@ -7,7 +7,7 @@
         </CardHeader>
         <CardContent>
           <form @submit.prevent="handleSubmit">
-            <div class="grid w-full items-center gap-4">
+            <div class="grid items-center w-full gap-4">
               <div class="flex flex-col space-y-1.5">
                 <Label for="email">Email</Label>
                 <Input id="email" v-model="email" placeholder="Enter your email" />
@@ -39,8 +39,7 @@
   import { Label } from '@/components/ui/label'
   import { Input } from '@/components/ui/input'
   import { Button } from '@/components/ui/button'
-  //  API service here
-  // import { login } from '@/services/api'
+  import apiService from '/src/services/api.js'
   
   const router = useRouter()
   const email = ref('')
@@ -55,7 +54,7 @@
     // const response = await login(email.value, password.value)
     // save the token to localStorage
     // localStorage.setItem('token', response.token)
-    await userStore.login(email.value, password.value);
+    await apiService.auth.login(email.value, password.value);
     router.push('/dashboard');
   } catch (err) {
     error.value = err.response?.data?.message || 'An error occurred during login';

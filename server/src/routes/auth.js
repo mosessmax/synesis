@@ -7,8 +7,12 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, password, role } = req.body;
+    const { name, matricNumber, email, password, role } = req.body;
 
+    const existingUser = await User.findOne({ $or: [{ email }, { matricNumber }] });
+    if (existingUser) {
+      return res.status(400).send('User already exists with the given email or matric number.');
+    }
     // Check if user already exists
     let user = await User.findOne({ email });
     if (user) {
@@ -21,8 +25,9 @@ router.post('/register', async (req, res) => {
 
     // Create new user
     user = new User({
-      username,
+      name,
       email,
+      matricNumber,
       password: hashedPassword,
       role
     });
