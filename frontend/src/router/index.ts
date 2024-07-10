@@ -3,8 +3,8 @@ import { createApp } from 'vue' // Add this line
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Dashboard from '../views/Dashboard.vue'
-// import TestTaking from '../views/TestTaking.vue'
-// import Results from '../views/Results.vue'
+import TestTaking from '../views/TestTaking.vue'
+import Results from '../views/Results.vue'
 import Layout from '@/components/Layout.vue'
 
 const routes = [
@@ -14,7 +14,8 @@ const routes = [
     children: [
       { path: '', redirect: '/dashboard' },
       { path: 'dashboard', component: Dashboard, meta: { requiresAuth: true } },
-      // Add other authenticated routes here
+      { path: 'test-taking', component: TestTaking, meta: { requiresAuth: true } },
+      { path: 'results', component: Results, meta: { requiresAuth: true } },
     ]
   },
   { path: '/login', component: Login },
