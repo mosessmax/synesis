@@ -1,6 +1,13 @@
 <template>
+
+<Button @click="push.success('Something good has been pushed!')">Push</Button>
+
+<!-- <Notivue v-slot="item">
+  <Notification :item="item" />
+</Notivue> -->
+
     <div class="container p-4 mx-auto">
-      <h1 class="mb-4 text-2xl font-bold">{{ test.title }}</h1>
+      <h1 class="mb-4 text-2xl font-bold">{{ test.title || 'Test' }}</h1>
       <div v-if="!testStarted">
         <Button @click="startTest">Start Test</Button>
       </div>
@@ -27,7 +34,7 @@
       <div v-else>
         <h2 class="text-xl font-semibold">Test Submitted</h2>
         <p>
-          Thank you for taking the test. You can view your results once they are available.
+          Thank you for taking the test. your test has been submitted, and you can view your results once they are available.
         </p>
       </div>
     </div>
@@ -35,14 +42,15 @@
   
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
+// import { useToast } from "@/components/ui/toast";
+import { Notivue, Notification, push } from 'notivue'
 import apiService from "/src/services/api.js";
 
 const route = useRoute();
-const toast = useToast();
+// const toast = useToast();
 // const useApiService = apiService();
 
 const test = ref({})
@@ -51,19 +59,26 @@ const testStarted = ref(false)
 const testSumitted = ref(false)
 
 const allQuestionsAnswered = computed(() => {
-  return test.value.questions &&
-  test.value.questions.every(q => answers.value[q?.id] !== undefined)
+//   return test.value.questions &&
+//   test.value.questions.every(q => answers.value[q?.id] !== undefined)
+// })
+return test.value.questions?.every(q => answers.value[q?.id] !== undefined)
 })
 
 const startTest = async () => {
-    if (!allQuestionsAnswered.value) {
+  try {
+    const response = await apiService.tests.startTest(route.params.id)
+    test.value = response.data
+    testStarted.value = true
+  } catch (error) {
+  }
+    // if (!allQuestionsAnswered.value) {
         toast({
             title: "Error",
             description: "failed to start the test, please try again.",
             variant: 'desctruvtive',
         })
     }
-}
 
 const submitTest = async () => {
     if (!allQuestionsAnswered.value) {
@@ -76,7 +91,7 @@ const submitTest = async () => {
     }
 
     try {
-    await apiService.submitTest(test.id, answers.value)
+    await apiService.tests.submitTest(test.id, answers.value)
     testSumitted.value = true
     toast({
         title: "Success",
@@ -84,7 +99,8 @@ const submitTest = async () => {
         variant: 'success',
     })
     setTimeout(()=>{
-        router.push(`/results/${test.id}`)
+        // router.push(`/results/${test.id}`)
+        router.push(`/results/${submissionId}`)
     }, 3000)
     } catch (error) {
         toast({
@@ -118,9 +134,10 @@ const submitTest = async () => {
 // onMounted(startTest);
 // fetch the test details when the component is mounted
 onMounted(async () => {
-  const testId = route.params.id
-  const response = await apiService.getTestDetails(testId)
-  test.value = response.data
+//   const testId = route.params.id
+//   // const response = await apiService.getTestDetails(testId)
+//   const response = await apiService.tests.startTest(testId)
+//   test.value = response.data
 })
 
 </script>
