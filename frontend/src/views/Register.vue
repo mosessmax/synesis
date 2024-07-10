@@ -9,6 +9,10 @@
           <form @submit.prevent="handleSubmit">
             <div class="grid items-center w-full gap-4">
               <div class="flex flex-col space-y-1.5">
+                <Label for="number">Matric Number</Label>
+                <Input id="number" v-model="matricNumber" placeholder="Enter your matric number" />
+                </div>
+              <div class="flex flex-col space-y-1.5">
                 <Label for="name">Name</Label>
                 <Input id="name" v-model="name" placeholder="Enter your name" />
               </div>
@@ -51,7 +55,8 @@
   import apiService from '/src/services/api.js';
   
   const router = useRouter()
-  const { toast } = useToast() 
+  const { toast } = useToast()
+  const matricNumber = ref('') 
   const name = ref('')
   const email = ref('')
   const password = ref('')

@@ -9,6 +9,10 @@
           <form @submit.prevent="handleSubmit">
             <div class="grid items-center w-full gap-4">
               <div class="flex flex-col space-y-1.5">
+                <Label for="email">Matric Number</Label>
+                <Input id="email" v-model="matricNumber" placeholder="Enter your Matric Number" />
+                </div>
+              <div class="flex flex-col space-y-1.5">
                 <Label for="email">Email</Label>
                 <Input id="email" v-model="email" placeholder="Enter your email" />
               </div>
@@ -39,9 +43,12 @@
   import { Label } from '@/components/ui/label'
   import { Input } from '@/components/ui/input'
   import { Button } from '@/components/ui/button'
+  import { useToast } from '@/components/ui/toast'
   import apiService from '/src/services/api.js'
   
   const router = useRouter()
+  const { toast } = useToast()
+  const matricNumber = ref('')
   const email = ref('')
   const password = ref('')
   const isLoading = ref(false)
