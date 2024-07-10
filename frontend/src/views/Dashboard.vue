@@ -38,9 +38,12 @@
         </div>
         <div v-else>
           <p>You haven't taken any tests yet.</p>
-        </div>
+       </div>
       </CardContent>
     </Card>
+    <div v-if="!testStarted">
+        <Button @click="startTest">Start Test</Button>
+      </div>
   </div>
 </template>
 

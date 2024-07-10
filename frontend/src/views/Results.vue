@@ -37,7 +37,7 @@
   import { ref, onMounted } from 'vue'
   import { useRoute } from 'vue-router'
   import apiService from '@/services/api.js'
-  import { Notivue, Notification, Push } from 'notivue';
+//   import { Notivue, Notification, Push } from 'notivue';
 
   const route = useRoute()
   const result = ref(null)

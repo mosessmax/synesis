@@ -50,12 +50,11 @@
   import { Label } from '@/components/ui/label'
   import { Input } from '@/components/ui/input'
   import { Button } from '@/components/ui/button'
-  import { useToast } from '@/components/ui/toast'
-  // import { apiService } from '@/services/api'
+  // import { useToast } from '@/components/ui/toast'
+  import { Toaster, toast } from 'vue-sonner'
   import apiService from '/src/services/api.js';
   
   const router = useRouter()
-  const { toast } = useToast()
   const matricNumber = ref('') 
   const name = ref('')
   const email = ref('')
