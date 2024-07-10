@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const { name, matricNumber, email, password, role } = req.body;
+    const { name, email, password, role, matricNumber } = req.body;
 
     const existingUser = await User.findOne({ $or: [{ email }, { matricNumber }] });
     if (existingUser) {
@@ -43,18 +43,18 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { matricNumber, email, password } = req.body;
 
     // Check if user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ $or: [{ email }, { matricNumber }] });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials for U' });
     }
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials for P' });
     }
 
     // Create and send token

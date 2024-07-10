@@ -9,8 +9,8 @@
           <form @submit.prevent="handleSubmit">
             <div class="grid items-center w-full gap-4">
               <div class="flex flex-col space-y-1.5">
-                <Label for="email">Matric Number</Label>
-                <Input id="email" v-model="matricNumber" placeholder="Enter your Matric Number" />
+                <Label for="number">Matric Number</Label>
+                <Input id="number" v-model="matricNumber" placeholder="Enter your Matric Number" />
                 </div>
               <div class="flex flex-col space-y-1.5">
                 <Label for="email">Email</Label>
@@ -56,15 +56,23 @@
 
   const handleSubmit = async () => {
   isLoading.value = true;
-  error.value = '';
+  // error.value = '';
   try {
-    // const response = await login(email.value, password.value)
-    // save the token to localStorage
-    // localStorage.setItem('token', response.token)
-    await apiService.auth.login(email.value, password.value);
-    router.push('/dashboard');
+    const response = await apiService.auth.login(matricNumber.value, email.value, password.value)
+    localStorage.setItem('token', response.token)
+    toast({
+      title: 'Woza!',
+      description: 'You have successfully logged in',
+    });
+    router.push('/dashboard')
+    // await apiService.auth.login(matricNumber.value, email.value, password.value);
+    // router.push('/dashboard');
   } catch (err) {
-    error.value = err.response?.data?.message || 'An error occurred during login';
+    toast ({
+      title: 'uh-oh error',
+      description: err.response?.data?.message || 'An error occurred during login',
+    });
+    err.value = err.response?.data?.message || 'An error occurred during login';
   } finally {
     isLoading.value = false;
   }
