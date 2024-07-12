@@ -46,7 +46,6 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { Button } from "@/components/ui/button";
 // import { useToast } from "@/components/ui/toast";
-import { Notivue, Notification, push } from 'notivue'
 import apiService from "/src/services/api.js";
 
 const route = useRoute();

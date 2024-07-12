@@ -10,11 +10,11 @@
             <div class="grid items-center w-full gap-4">
               <div class="flex flex-col space-y-1.5">
                 <Label for="number">Matric Number</Label>
-                <Input id="number" v-model="matricNumber" placeholder="Enter your matric number" />
+                <Input id="number" v-model="matricNumber" placeholder="Enter your matric number" required />
                 </div>
               <div class="flex flex-col space-y-1.5">
                 <Label for="name">Name</Label>
-                <Input id="name" v-model="name" placeholder="Enter your name" />
+                <Input id="name" v-model="name" required placeholder="Enter your name" />
               </div>
               <div class="flex flex-col space-y-1.5">
                 <Label for="email">Email</Label>
@@ -60,43 +60,47 @@
   const email = ref('')
   const password = ref('')
   const confirmPassword = ref('')
-  const isLoading = ref(false)
+  const isLoading = ref(false);
 
   const validateForm = () => {
-    if (name.value === '' || email.value === '' || password.value === '' || confirmPassword.value === '') {
-      toast({
-        title: 'error',
-        description: 'Please fill in all fields',
-        status: 'error',
-        variant: 'destructive',
-        duration: 3000,
-        isClosable: true
-      })
-      return true
+  let missingFields = [];
+  if (!name.value) missingFields.push("Name");
+  if (!matricNumber.value) missingFields.push("Matric Number");
+  if (!email.value) missingFields.push("Email");
+  if (!password.value) missingFields.push("Password");
+  if (!confirmPassword.value) missingFields.push("Confirm Password");
+
+  if (missingFields.length > 0) {
+    toast({
+      title: 'Missing Fields',
+      description: `Please fill in the following fields: ${missingFields.join(', ')}.`,
+      status: 'error',
+      variant: 'destructive',
+      duration: 5000,
+      isClosable: true
+    });
+    return false;
   }
+
   if (password.value !== confirmPassword.value) {
     toast({
-      title: 'error',
-      description: 'Passwords don\'t match',
+      title: "Passwords don\'t match",
+      description: "Please ensure the passwords match.",
       status: 'error',
       variant: 'destructive',
       duration: 3000,
       isClosable: true
-    })
-    return false
+    });
+    return false;
   }
-  return true
-}
+
+  return true;
+};
 // if i need more validation, i'll add more here  
 
   
   const handleSubmit = async () => {
     if (!validateForm()) return;
-
-    // if (password.value !== confirmPassword.value) {
-    //   alert("Passwords don't match")
-    //   return
-    // }
     
     isLoading.value = true;
     try {

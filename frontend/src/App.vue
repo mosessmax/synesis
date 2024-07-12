@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import { Button } from './components/ui/button';
-import { Toaster, toast } from 'vue-sonner';
+// import { Toaster, toast } from 'vue-sonner';
 </script>
 
 <template>
   
   <RouterView />
-<Toaster />
+<!-- <Toaster /> -->
+<!-- <toast /> -->
 
-<button @click="() => toast({ title: 'Hello', description: 'This is a toast message' })">Show Toast</button>
+<!-- <button @click="() => toast({ title: 'Hello', description: 'This is a toast message' })">Show Toast</button> -->
 
   <!-- <div class="container py-8">
     <Button>click me</Button>
