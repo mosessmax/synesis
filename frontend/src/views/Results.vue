@@ -37,12 +37,14 @@
   import { ref, onMounted } from 'vue'
   import { useRoute } from 'vue-router'
   import apiService from '@/services/api.js'
+  import { Toaster, toast } from 'vue-sonner'
 //   import { Notivue, Notification, Push } from 'notivue';
 
   const route = useRoute()
   const result = ref(null)
   const loading = ref(true)
   const error = ref(null)
+  const toaster = new Toaster()
   
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60)
