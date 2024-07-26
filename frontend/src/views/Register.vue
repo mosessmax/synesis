@@ -21,6 +21,10 @@
                 <Input id="email" v-model="email" placeholder="Enter your email" />
               </div>
               <div class="flex flex-col space-y-1.5">
+              <Label for="dateOfBirth">Date of Birth</Label>
+              <Input id="dateOfBirth" v-model="dateOfBirth" type="date" required />
+            </div>
+              <div class="flex flex-col space-y-1.5">
                 <Label for="password">Password</Label>
                 <Input id="password" v-model="password" type="password" placeholder="Create a password" />
               </div>
@@ -58,6 +62,7 @@
   const matricNumber = ref('') 
   const name = ref('')
   const email = ref('')
+  const dateOfBirth = ref('')
   const password = ref('')
   const confirmPassword = ref('')
   const isLoading = ref(false);
@@ -68,6 +73,7 @@
   if (!matricNumber.value) missingFields.push("Matric Number");
   if (!email.value) missingFields.push("Email");
   if (!password.value) missingFields.push("Password");
+  if (!dateOfBirth.value) missingFields.push("Date of Birth");
   if (!confirmPassword.value) missingFields.push("Confirm Password");
 
   if (missingFields.length > 0) {
@@ -104,7 +110,7 @@
     
     isLoading.value = true;
     try {
-      await apiService.auth.register(name.value, matricNumber.value, email.value, password.value)
+      await apiService.auth.register(name.value, matricNumber.value, email.value, dateOfBirth.value, password.value)
       toast({
         title: 'success',
         description: 'registration successful. please login.',

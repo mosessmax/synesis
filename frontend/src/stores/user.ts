@@ -1,4 +1,3 @@
-// src/store/user.js
 import { defineStore } from 'pinia';
 import api from '@/services/api';
 
