@@ -43,37 +43,44 @@
   import { Label } from '@/components/ui/label'
   import { Input } from '@/components/ui/input'
   import { Button } from '@/components/ui/button'
-  import { useToast } from '@/components/ui/toast'
+  import { Toaster, toast } from 'vue-sonner';
   import apiService from '/src/services/api.js'
   
   const router = useRouter()
-  const { toast } = useToast()
   const matricNumber = ref('')
   const email = ref('')
   const password = ref('')
   const isLoading = ref(false)
   
+  const validateForm = () => {
+    const missingFields = []
+    if (!matricNumber.value) missingFields.push('matricNumber')
+    if (!email.value) missingFields.push('email')
+    if (!password.value) missingFields.push('password')
+    if (missingFields.length > 0) {
+      toast.error('Missing fields', {
+        description: `Please fill in the missing fields: ${missingFields.join(', ')}.`,
+      })
+      return false
+    }
+    return true
+  }
 
   const handleSubmit = async () => {
+    if (!validateForm()) return;
   isLoading.value = true;
-  // error.value = '';
   try {
     const response = await apiService.auth.login(matricNumber.value, email.value, password.value)
     localStorage.setItem('token', response.token)
-    toast({
-      title: 'Success!',
-      description: 'You have successfully logged in',
-    });
+    toast.success('Login successful', {
+  description: 'Redirecting to dashboard...',
+})
     router.push('/dashboard')
-    // await apiService.auth.login(matricNumber.value, email.value, password.value);
-    // router.push('/dashboard');
   } catch (err) {
-    toast ({
-      title: 'uh-oh error',
-      description: err.response?.data?.message || 'An error occurred during login',
-    });
-    err.value = err.response?.data?.message || 'An error occurred during login';
-  } finally {
+   toast.error('Login Error', {
+  description: 'Invalid credentials',
+})
+    } finally {
     isLoading.value = false;
   }
 };

@@ -10,11 +10,11 @@
             <div class="grid items-center w-full gap-4">
               <div class="flex flex-col space-y-1.5">
                 <Label for="number">Matric Number</Label>
-                <Input id="number" v-model="matricNumber" placeholder="Enter your matric number" required />
+                <Input id="number" v-model="matricNumber" placeholder="Enter your matric number" />
                 </div>
               <div class="flex flex-col space-y-1.5">
                 <Label for="name">Name</Label>
-                <Input id="name" v-model="name" required placeholder="Enter your name" />
+                <Input id="name" v-model="name" placeholder="Enter your name" />
               </div>
               <div class="flex flex-col space-y-1.5">
                 <Label for="email">Email</Label>
@@ -71,32 +71,21 @@
   if (!confirmPassword.value) missingFields.push("Confirm Password");
 
   if (missingFields.length > 0) {
-    toast({
-      title: 'Missing Fields',
-      description: `Please fill in the following fields: ${missingFields.join(', ')}.`,
-      status: 'error',
-      variant: 'destructive',
-      duration: 5000,
-      isClosable: true
+    toast.error('Missing Information', {
+      description: `Please fill in all the following fields to register: ${missingFields.join(', ')}.`,
     });
     return false;
   }
 
   if (password.value !== confirmPassword.value) {
-    toast({
-      title: "Passwords don\'t match",
-      description: "Please ensure the passwords match.",
-      status: 'error',
-      variant: 'destructive',
-      duration: 3000,
-      isClosable: true
+    toast.error("Passwords don't match", {
+    description: "Please ensure the passwords match.",
     });
     return false;
   }
 
   return true;
 };
-// if i need more validation, i'll add more here  
 
   
   const handleSubmit = async () => {
@@ -105,25 +94,15 @@
     isLoading.value = true;
     try {
       await apiService.auth.register(name.value, matricNumber.value, email.value, password.value)
-      toast({
-        title: 'success',
-        description: 'registration successful. please login.',
-        status: 'success',
-        variant: 'destructive',
-        duration: 3000,
-        isClosable: true
+      toast.success('Registration successful', {
+        description: 'Redirecting to login...',
       })
       // await register(name.value, email.value, password.value)
       router.push('/login')
     } catch (error) {
       console.error('Registration failed:', error)
-      toast({
-        title: 'error',
-        description: 'registration failed. please check try again.',
-        status: 'error',
-        variant: 'destructive',
-        duration: 3000,
-        isClosable: true
+      toast.error('Registration failed', {
+        description: 'Please check your information and try again.',
       })
     } finally {
       isLoading.value = false

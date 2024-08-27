@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import { Button } from './components/ui/button';
-// import { Toaster, toast } from 'vue-sonner';
+import { Toaster, } from 'vue-sonner';
 </script>
 
 <template>
   
   <RouterView />
-<!-- <Toaster /> -->
+  <Toaster richColors position="top-right" closeButton/>
 <!-- <toast /> -->
 
 <!-- <button @click="() => toast({ title: 'Hello', description: 'This is a toast message' })">Show Toast</button> -->
