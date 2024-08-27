@@ -12,10 +12,6 @@
                 <Label for="number">Matric Number</Label>
                 <Input id="number" v-model="matricNumber" placeholder="Enter your Matric Number" />
                 </div>
-                <div class="flex flex-col space-y-1.5">
-              <Label for="dateOfBirth">Date of Birth</Label>
-              <Input id="dateOfBirth" v-model="dateOfBirth" type="date" required />
-            </div>
               <div class="flex flex-col space-y-1.5">
                 <Label for="email">Email</Label>
                 <Input id="email" v-model="email" placeholder="Enter your email" />
@@ -53,7 +49,6 @@
   const router = useRouter()
   const { toast } = useToast()
   const matricNumber = ref('')
-  const dateOfBirth = ref('')
   const email = ref('')
   const password = ref('')
   const isLoading = ref(false)
@@ -63,7 +58,7 @@
   isLoading.value = true;
   // error.value = '';
   try {
-    const response = await apiService.auth.login(matricNumber.value, email.value, dateOfBirth.value, password.value)
+    const response = await apiService.auth.login(matricNumber.value, email.value, password.value)
     localStorage.setItem('token', response.token)
     toast({
       title: 'Success!',

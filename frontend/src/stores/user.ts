@@ -18,9 +18,9 @@ export const useUserStore = defineStore('user', {
       this.token = token;
       localStorage.setItem('token', token);
     },
-    async login(matricNumber, email, password, dateOfBirth) {
+    async login(matricNumber, email, password) {
       try {
-        const response = await api.auth.login(matricNumber, email, password, dateOfBirth);
+        const response = await api.auth.login(matricNumber, email, password);
         this.setToken(response.data.token);
         this.setUser(response.data.user);
         return response.data;
@@ -29,9 +29,9 @@ export const useUserStore = defineStore('user', {
         throw error;
       }
     },
-    async register(name, matricNumber, email, password, dateOfBirth) {
+    async register(name, matricNumber, email, password) {
       try {
-        const response = await api.auth.register(name, matricNumber, email, password, dateOfBirth);
+        const response = await api.auth.register(name, matricNumber, email, password);
         this.setToken(response.data.token);
         this.setUser(response.data.user);
         return response.data;

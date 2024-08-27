@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, role, matricNumber, dateOfBirth } = req.body;
+    const { name, email, password, role, matricNumber } = req.body;
 
     const existingUser = await User.findOne({ $or: [{ email }, { matricNumber }] });
     if (existingUser) {
@@ -29,7 +29,6 @@ router.post('/register', async (req, res) => {
       email,
       matricNumber,
       password: hashedPassword,
-      dateOfBirth: new Date(dateOfBirth),
       role
     });
 
@@ -44,7 +43,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { matricNumber, email, password, dateOfBirth } = req.body;
+    const { matricNumber, email, password } = req.body;
 
     // Check if user exists
     const user = await User.findOne({ $or: [{ email }, { matricNumber }] });
@@ -58,11 +57,12 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials for P' });
     }
 
-    //check for date of birth
-    const providedDOB = new Date(dateOfBirth);
-    if (providedDOB.toDateString() !== user.dateOfBirth.toDateString()) {
-      return res.status(400).json({ message: 'Invalid credentials for D' });
-    }
+
+    // //check for date of birth
+    // const providedDOB = new Date(dateOfBirth);
+    // if (providedDOB.toDateString() !== user.dateOfBirth.toDateString()) {
+    //   return res.status(400).json({ message: 'Invalid credentials for D' });
+    // }
 
     // Create and send token
     const payload = {
@@ -77,7 +77,7 @@ router.post('/login', async (req, res) => {
       res.json({ token });
     });
   } catch (error) {
-    console.error(error);
+    console.error('Login Error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
